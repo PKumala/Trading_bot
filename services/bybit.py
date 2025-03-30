@@ -1,25 +1,38 @@
 import requests
-from config import BYBIT_API_KEY, BYBIT_API_SECRET
+from flask import json
+from pybit.unified_trading import HTTP
 
-BASE_URL = "https://api.bybit.com"
 
-def send_order(symbol, side, price, quantity):
-    payload = {
-        "symbol": symbol,
-        "side": side,
-        "price": price,
-        "quantity": quantity,
-        "api_key": BYBIT_API_KEY
-    }
-    response = requests.post(f"{BASE_URL}/v2/private/order/create", json=payload)
-    return response.json()
 
-def amend_order(order_id, price, quantity):
-    payload = {
-        "order_id": order_id,
-        "price": price,
-        "quantity": quantity,
-        "api_key": BYBIT_API_KEY
-    }
-    response = requests.post(f"{BASE_URL}/v2/private/order/replace", json=payload)
-    return response.json()
+def send_order(symbol, order_type, take_profit, stop_loss, api_key, api_secret_key, qty):
+    try:
+        order_side = "Buy" if order_type == "Long" else "Sell"
+
+        session = HTTP(
+            demo=True,
+            testnet=True,
+            api_key=api_key,
+            api_secret=api_secret_key,
+        )
+        take = round(float(take_profit), 2)
+        loss = round(float(stop_loss), 2)
+
+        response = session.place_order(
+            category="linear",
+            symbol=symbol,
+            side=order_side,
+            orderType="Market",
+            qty=qty,
+            takeProfit=take,
+            stopLoss=loss,
+        )
+
+        response_json = response if isinstance(response, dict) else response.json()
+        print(f"Zlecenie {order_side} wysłane: {json.dumps(response_json, indent=4)}")
+
+    except Exception as e:
+        print(f"Błąd składania zlecenia: {e}")
+
+def amend_order():
+    print()
+    #todo amend order

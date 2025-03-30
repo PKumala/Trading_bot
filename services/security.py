@@ -1,9 +1,10 @@
 from flask import request
-from config import SECRET_TOKEN, ALLOWED_IPS
+from config import config
 
 def verify_ip():
     client_ip = request.remote_addr
-    return client_ip in ALLOWED_IPS
+    return client_ip in config.ALLOWED_IPS
+
 
 def verify_token(data):
-    return data.get("token") == SECRET_TOKEN
+    return data.get("token") == config.TOKEN_AUTORYZACYJNY
