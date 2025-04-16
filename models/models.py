@@ -6,24 +6,25 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     hashed_password = db.Column(db.String(255), nullable=False)
     user_token = db.Column(db.String(255), nullable=False)
-    qty = db.Column(db.Float, nullable=False)
+    qty = db.Column(db.Float, nullable=True)
     bybit_api_key = db.Column(db.String(255), nullable=True)
     bybit_api_secret_key = db.Column(db.String(255), nullable=True)
-    #todo enable trading
+    enabled_trading = db.Column(db.Boolean, nullable=False, default=True)
+    balance = db.Column(db.Float, nullable=True)
     def __repr__(self):
         return f"<User {self.username}>"
 
 class Trade(db.Model):
-    __tablename__ = 'trading_db'
+    __tablename__ = 'trades'
     id = db.Column(db.Integer, primary_key=True)
-    user_identifier = db.Column(db.Integer, nullable=False)
+    user_identifier = db.Column(db.String(10), nullable=False)
     symbol = db.Column(db.String(50), nullable=False)
     trade_type = db.Column(db.String(10), nullable=False)
     buy_price = db.Column(db.Float, nullable=True)
     stop_loss = db.Column(db.Float, nullable=True)
     take_profit = db.Column(db.Float, nullable=True)
     trade_time = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(10), nullable=False)
-
+    signal_time = db.Column(db.DateTime, nullable=False)
+    order_id = db.Column(db.String(50), nullable=False)
     def __repr__(self):
         return f"<Trade {self.symbol} - {self.trade_type}>"
