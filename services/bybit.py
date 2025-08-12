@@ -137,5 +137,5 @@ def calculate_safe_qty(entry_price, account_balance, price_drop_percent, balance
 
     usable_margin = account_balance * (balance_usage_percent / 100)
     qty = usable_margin / (entry_price * price_drop_percent / 100)
-    qty = float(qty * 100) / 100
+    qty = float(qty * 10) / 100
     return qty

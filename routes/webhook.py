@@ -10,7 +10,13 @@ from utils.crypt_key import decrypt_api_key
 
 webhook_bp = Blueprint("webhook", __name__)
 logging.basicConfig(level=logging.INFO)
-
+@app.before_request
+def log_request_info():
+    try:
+        data = request.get_data(as_text=True)  # nie używa request.data bezpośrednio
+        logging.info(f"{request.remote_addr} - {request.method} {request.path} - {data}")
+    except Exception as e:
+        logging.warning(f"Request log failed: {e}")
 def handle_new_order(data, user, db):
     symbol, order_type, take_profit, stop_loss, time = data.get("symbol"), data.get("order_type"), data.get(
         "take_profit"), data.get("stop_loss"), data.get("time")
